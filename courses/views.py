@@ -1,13 +1,14 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
-from courses.models import Category, Course, Lesson, Assignment
+from courses.models import Category, Course, Lesson, Assignment, AssignmentSubmission
 from courses.serializers import (
     CategorySerializer,
     CourseSerializer,
     LessonSerializer,
     AssignmentSerializer,
+    AssignmentSubmissionSerializer
 )
-from utils.permissions import IsInstructor, IsAdmin
+from utils.permissions import IsInstructor, IsAdmin, IsInstructorOrOwner
 from rest_framework.exceptions import PermissionDenied
 
 
@@ -68,3 +69,26 @@ class AssignmentViewSet(ModelViewSet):
             )
 
         serializer.save(instructor=self.request.user)
+
+
+class AssignmentSubmissionViewSet(ModelViewSet):
+    queryset = AssignmentSubmission.objects.all()
+    serializer_class = AssignmentSubmissionSerializer
+    permission_classes = [IsAuthenticated, IsInstructorOrOwner]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.role == 'instructor':
+            # Instructor sees submissions only for their assignments
+            return AssignmentSubmission.objects.filter(assignment__instructor=user)
+        elif user.role == 'student':
+            # Student sees only their own submissions
+            return AssignmentSubmission.objects.filter(student=user)
+        return AssignmentSubmission.objects.none()
+
+    def perform_create(self, serializer):
+        if self.request.user.role != 'student':
+            raise PermissionDenied("Only students can submit assignments.")
+
+        serializer.save(student=self.request.user)
+

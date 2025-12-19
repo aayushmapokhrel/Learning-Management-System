@@ -55,3 +55,23 @@ class Assignment(models.Model):
 
     def __str__(self):
         return f"{self.course.title} - {self.title}"
+
+
+class AssignmentSubmission(models.Model):
+    assignment = models.ForeignKey(
+        Assignment, on_delete=models.CASCADE, related_name="submissions"
+    )
+    student = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="submissions"
+    )
+    file = models.FileField(upload_to="submissions/")
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    grade = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    feedback = models.TextField(blank=True, null=True)
+
+    class Meta:
+        unique_together = ("assignment", "student")
+        ordering = ["-submitted_at"]
+
+    def __str__(self):
+        return f"{self.student} - {self.assignment.title}"

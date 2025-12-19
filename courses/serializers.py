@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from courses.models import Category, Course, Lesson, Assignment
+from courses.models import Category, Course, Lesson, Assignment, AssignmentSubmission
 from django.utils import timezone
 
 
@@ -83,3 +83,23 @@ class AssignmentSerializer(serializers.ModelSerializer):
             if not value.name.endswith((".pdf", ".docx", ".pptx")):
                 raise serializers.ValidationError("Unsupported attachment format.")
         return value
+
+
+class AssignmentSubmissionSerializer(serializers.ModelSerializer):
+    student_name = serializers.CharField(source='student.full_name', read_only=True)
+    assignment_title = serializers.CharField(source='assignment.title', read_only=True)
+
+    class Meta:
+        model = AssignmentSubmission
+        fields = [
+            'id',
+            'assignment',
+            'assignment_title',
+            'student',
+            'student_name',
+            'file',
+            'submitted_at',
+            'grade',
+            'feedback'
+        ]
+        read_only_fields = ['submitted_at', 'student_name', 'assignment_title']
