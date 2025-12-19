@@ -103,3 +103,9 @@ class AssignmentSubmissionSerializer(serializers.ModelSerializer):
             'feedback'
         ]
         read_only_fields = ['submitted_at', 'student_name', 'assignment_title']
+
+    def validate(self, attrs):
+        assignment = attrs.get('assignment')
+        if assignment.due_date < timezone.now():
+            raise serializers.ValidationError("Cannot submit: the assignment due date has passed.")
+        return attrs
