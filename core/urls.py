@@ -26,4 +26,6 @@ urlpatterns = [
     path('api/token/', EmailTokenObtainPairView.as_view()),
     path('api/token/refresh/', TokenRefreshView.as_view()),
     path('api/', include('users.urls')),
+    path('api/', include('courses.urls')),
+
 ]
