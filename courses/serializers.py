@@ -35,6 +35,19 @@ class LessonSerializer(serializers.ModelSerializer):
     course = serializers.PrimaryKeyRelatedField(
         queryset=Course.objects.all()
     )
+
     class Meta:
         model = Lesson
         fields = ["id", "title", "course", "video", "material", "created_at"]
+
+    def validate_video(self, value):
+        if value:
+            if not value.name.endswith(('.mp4', '.avi', '.mov')):
+                raise serializers.ValidationError("Unsupported video format.")
+        return value
+
+    def validate_material(self, value):
+        if value:
+            if not value.name.endswith(('.pdf', '.docx', '.pptx')):
+                raise serializers.ValidationError("Unsupported material format.")
+        return value
