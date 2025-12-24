@@ -6,8 +6,11 @@ from django.utils import timezone
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = "__all__"
-
+        fields = [
+            "id",
+            "name",
+            "description"
+        ]
 
 class CourseSerializer(serializers.ModelSerializer):
     instructor = serializers.StringRelatedField(read_only=True)
@@ -25,9 +28,9 @@ class CourseSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
-
     def get_lessons_count(self, obj):
         return obj.lessons.count()
+
 
 
 class LessonSerializer(serializers.ModelSerializer):

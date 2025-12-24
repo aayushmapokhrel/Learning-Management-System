@@ -28,7 +28,7 @@ class CourseViewSet(ModelViewSet):
     def get_permissions(self):
         if self.action in ["list", "retrieve"]:
             return [IsAuthenticated()]
-        return [IsAuthenticated(), IsInstructor()]
+        return [IsInstructor()]
 
     def perform_create(self, serializer):
         serializer.save(instructor=self.request.user)
@@ -42,7 +42,7 @@ class LessonViewSet(ModelViewSet):
     def get_permissions(self):
         if self.action in ["list", "retrieve"]:
             return [IsAuthenticated()]
-        return [IsAuthenticated(), IsInstructor()]
+        return [IsInstructor()]
 
     def perform_create(self, serializer):
         # The course must belong to the instructor
@@ -59,7 +59,7 @@ class AssignmentViewSet(ModelViewSet):
     def get_permissions(self):
         if self.action in ["list", "retrieve"]:
             return [IsAuthenticated()]
-        return [IsAuthenticated(), IsInstructor()]
+        return [IsInstructor()]
 
     def perform_create(self, serializer):
         course = serializer.validated_data.get("course")
