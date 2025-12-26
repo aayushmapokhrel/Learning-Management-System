@@ -50,16 +50,16 @@
 
 ## Project Structure
 
-  lms/
-  ├── users/ # Custom user model & auth
-  ├── courses/ # Categories, courses, lessons, assignments
-  ├── enrollments/ # Student enrollments
-  ├── core/ # Project settings
-  ├── docker-compose.yml
-  ├── Dockerfile
-  ├── requirements.txt
-  ├── .env
-  └── README.md
+    lms/
+    ├── users/ # Custom user model & auth
+    ├── courses/ # Categories, courses, lessons, assignments
+    ├── enrollments/ # Student enrollments
+    ├── core/ # Project settings
+    ├── docker-compose.yml
+    ├── Dockerfile
+    ├── requirements.txt
+    ├── .env
+    └── README.md
 
 
 ## Authentication
