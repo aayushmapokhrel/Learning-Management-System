@@ -4,8 +4,10 @@ from rest_framework.exceptions import ValidationError
 from enrollments.models import Enrollment
 from enrollments.serializers import EnrollmentSerializer
 from utils.permissions import IsStudent
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
 
-
+@method_decorator(cache_page(60*15), name='dispatch')
 class EnrollmentViewSet(ModelViewSet):
     serializer_class = EnrollmentSerializer
     permission_classes = [IsAuthenticated, IsStudent]

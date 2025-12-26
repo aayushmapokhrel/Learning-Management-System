@@ -11,9 +11,12 @@ from courses.serializers import (
 )
 from utils.permissions import IsInstructor, IsAdmin, IsInstructorOrOwner, IsStudentOwner
 from rest_framework.exceptions import PermissionDenied
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
 
 
 # Category CRUD (Admin only)
+@method_decorator(cache_page(60*60), name='dispatch')
 class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
@@ -21,6 +24,7 @@ class CategoryViewSet(ModelViewSet):
 
 
 # Course CRUD (Instructor creates, Admin can manage)
+@method_decorator(cache_page(60*30), name='dispatch')
 class CourseViewSet(ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
@@ -35,6 +39,7 @@ class CourseViewSet(ModelViewSet):
 
 
 # Lesson CRUD (Instructor only)
+@method_decorator(cache_page(60*15), name='dispatch')
 class LessonViewSet(ModelViewSet):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
@@ -51,7 +56,7 @@ class LessonViewSet(ModelViewSet):
             raise PermissionDenied("You can only add lessons to your own courses")
         serializer.save()
 
-
+@method_decorator(cache_page(60*15), name='dispatch')
 class AssignmentViewSet(ModelViewSet):
     queryset = Assignment.objects.all()
     serializer_class = AssignmentSerializer
@@ -71,7 +76,7 @@ class AssignmentViewSet(ModelViewSet):
 
         serializer.save(instructor=self.request.user)
 
-
+@method_decorator(cache_page(60*15), name='dispatch')
 class AssignmentSubmissionViewSet(ModelViewSet):
     queryset = AssignmentSubmission.objects.all()
     serializer_class = AssignmentSubmissionSerializer
@@ -93,7 +98,7 @@ class AssignmentSubmissionViewSet(ModelViewSet):
 
         serializer.save(student=self.request.user)
 
-
+@method_decorator(cache_page(60*15), name='dispatch')
 class LessonProgressViewSet(ModelViewSet):
     serializer_class = LessonProgressSerializer
     permission_classes = [IsAuthenticated, IsStudentOwner]
